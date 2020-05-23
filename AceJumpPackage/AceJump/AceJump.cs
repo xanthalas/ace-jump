@@ -25,8 +25,7 @@ namespace AceJumpPackage.AceJump
 
         public AceJump()
         {
-
-
+            IsMatchCaseSensitive = false;
         }
 
         public bool Active
@@ -41,11 +40,17 @@ namespace AceJumpPackage.AceJump
             }
         }
 
+        public bool IsMatchCaseSensitive { get; set; }
+
         public char? OffsetKey { get; private set; }
 
         public void HighlightLetter(string letterTofind)
-        {
-            this.letter = letterTofind.First().ToString().ToLower();
+        { 
+            this.letter = letterTofind.First().ToString();
+            if (IsMatchCaseSensitive == false)
+            {
+                this.letter = this.letter.ToLower();
+            }
             
             int totalLocations = this.textView.TextSnapshot.GetText()
                 .Count(c => c.ToString().ToLower() == this.letter);
@@ -81,7 +86,7 @@ namespace AceJumpPackage.AceJump
             //Loop through each character, and place a box over item 
             for (int i = start; (i < end); ++i)
             {
-                if (this.textView.TextSnapshot[i].ToString().ToLower() == this.letter)
+                if(IsLetterAMatch(this.textView.TextSnapshot[i].ToString(), this.letter))
                 {
                     var span = new SnapshotSpan(this.textView.TextSnapshot, Span.FromBounds(i, i + 1));
                     
@@ -105,6 +110,16 @@ namespace AceJumpPackage.AceJump
 
                 }
             }
+        }
+
+        private bool IsLetterAMatch(string letter, string searchLetter)
+        {
+            if (IsMatchCaseSensitive)
+            {
+                return letter == searchLetter;
+            }
+
+            return letter.ToLower() == searchLetter.ToLower();
         }
 
         private double GetFontSize(ITextViewLine line, int i)
