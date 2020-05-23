@@ -35,7 +35,7 @@ namespace AceJumpPackage
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly Package myPackage;
+        private static AceJumpCommandPackage myPackage;
 
         private const string VsVimSetDisabled = "VsVim.SetDisabled";
 
@@ -117,6 +117,7 @@ namespace AceJumpPackage
         public static void Initialize(IServiceProvider package, ICommandExecutorService commandExecutor, IViewProvider viewProvider)
         {
             Instance = new AceJumpCommand(package, commandExecutor, viewProvider);
+            myPackage = (AceJumpCommandPackage)package.GetService(typeof(AceJumpCommandPackage));
         }
 
         /// <summary>
@@ -141,7 +142,7 @@ namespace AceJumpPackage
             var textView = myViewProvider.GetActiveWpfView(view);
 
             _jumpControler?.Close();
-            var ace = new AceJump.AceJump();
+            var ace = new AceJump.AceJump(myPackage);
             ace.SetView(textView);
 
             _jumpControler = new JumpControler(ace);

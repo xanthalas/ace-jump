@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using AceJumpPackage.AceJump;
 using AceJumpPackage.Helpers;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -43,6 +44,8 @@ namespace AceJumpPackage
     [Guid(AceJumpCommandPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideAutoLoad(UIContextGuids.CodeWindow)]
+        [ProvideOptionPage(typeof(OptionsPageGrid),
+    "AceJump", "Options", 0, 0, true)]
     public sealed class AceJumpCommandPackage : Package
     {
         /// <summary>
@@ -74,5 +77,15 @@ namespace AceJumpPackage
         }
 
         #endregion
+
+        public bool IsMatchCaseSensitive
+        {
+            get
+            {
+                var page = (OptionsPageGrid) GetDialogPage(typeof(OptionsPageGrid));
+                return page.IsMatchCaseSensitive;
+            }
+        }
+
     }
 }

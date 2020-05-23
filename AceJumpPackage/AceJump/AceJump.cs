@@ -9,6 +9,7 @@ using AceJumpPackage.View;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
+using Microsoft.VisualStudio.Shell;
 
 namespace AceJumpPackage.AceJump
 {
@@ -23,9 +24,17 @@ namespace AceJumpPackage.AceJump
 
         private LetterReferenceDictionary letterLocationSpans;
 
-        public AceJump()
+        public AceJump(Package package)
         {
-            IsMatchCaseSensitive = false;
+            var acejumpPackage = package as AceJumpCommandPackage;
+
+            if (acejumpPackage == null)
+            {
+                IsMatchCaseSensitive = false;
+                return;
+            }
+
+            IsMatchCaseSensitive = acejumpPackage.IsMatchCaseSensitive;
         }
 
         public bool Active
@@ -43,6 +52,7 @@ namespace AceJumpPackage.AceJump
         public bool IsMatchCaseSensitive { get; set; }
 
         public char? OffsetKey { get; private set; }
+
 
         public void HighlightLetter(string letterTofind)
         { 
